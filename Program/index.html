@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Example Customer Dialog</title>
+    <style>
+
+      input {
+
+        margin-left: 10px;
+        padding-left: 10px;
+
+      }
+
+      button {
+
+        margin-left: 10px;
+        margin-top: 13%;
+        background-color: white;
+        border: 0.5px solid black;
+        width: 145px;
+        left: 10px;
+        font-size: 10px;
+
+      }
+      
+      table {
+        width:  200px;
+        height:  200px;
+        color: white;
+        margin-left: 10%;
+        margin-top: 15%;
+      }
+
+      #Customer_Dialog_Box {
+
+        width: 170px;
+        height: 150px;
+        background-color: black;
+        position:  absolute;
+        left:  45%;
+        top: 100px;
+        border-radius: 3px 15px 5px 30px;
+
+      }
+
+      #Customer_Dialog_Table {
+
+        width: 240px;
+        height: 250px;
+        background-color: black;
+        position: absolute;
+        left: 45%;
+        top: 350px;
+        border-radius: 3px 15px 5px 30px;
+        color: white;
+
+      }
+
+
+
+
+    </style>
+  </head>
+
+  <body>
+
+    <div id="Customer_Dialog_Box">
+
+      <label>Customer ID Dialog</label>
+      <input id="input"></input>
+
+      <button onclick="sendID()">Ping ID</button>
+
+    </div>
+
+    <div id="Customer_Dialog_Table">
+
+      <table>
+        <tbody>
+
+        <tr>
+          <td>Ins.-Id:</td>
+          <td id="UserID"></td>
+        </tr>
+
+        <tr>
+          <td>Age:</td>
+          <td id="Age"></td>
+        </tr>
+
+        <tr>
+          <td>Level:</td>
+          <td id="Level"></td>
+        </tr>
+
+        <tr>
+          <td>Production:</td>
+          <td id="Production"></td>
+        </tr>
+
+        <tr>
+          <td>TotalProd:</td>
+          <td id="TotalProd"></td>
+        </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        var socket = io();
+
+        element = document.getElementById("input");
+
+        function sendID() {
+          socket.emit("myUserID", element.value);
+        }
+
+        const userBox = document.getElementById("UserID");
+        const AgeID = document.getElementById("Age");
+        const LevelID = document.getElementById("Level");
+        const ProductionID = document.getElementById("Production");
+        const TotalProdID = document.getElementById("TotalProd");
+
+        socket.on("IDexists", (Id) => {
+
+          console.log(Id);
+
+          var UID = JSON.stringify(Id.UserID);
+          var Age_ID = JSON.stringify(Id.Age);
+          var Level = JSON.stringify(Id.Level);
+          var Production = JSON.stringify(Id.Production);
+          var TotalProd = JSON.stringify(Id.TotalProd);
+
+
+          userBox.innerHTML = "";
+          AgeID.innerHTML = "";
+          LevelID.innerHTML = "";
+          ProductionID.innerHTML = "";
+          TotalProdID.innerHTML = "";
+
+          userBox.innerHTML += UID;
+          AgeID.innerHTML += Age_ID;
+          LevelID.innerHTML += Level;
+          ProductionID.innerHTML += Production;
+          TotalProdID.innerHTML += TotalProd;
+
+
+        });
+
+        socket.on("TooShort", (Id) => {
+            userBox.innerHTML += "The Customer ID must have at least 8 digits";
+        });
+
+        socket.on("IsEmtpy", (Id) => {
+            userBox.innerHTML += "The Dialog Field is empty";
+        });
+
+
+
+    </script>
+  </body>
+
+
+</html>
